@@ -4,34 +4,32 @@
   // $id = $_SESSION['id']
 ?>
 
-    <main>
-      <div class="wrapper-main">
-        <section class="section-default">
-          <!--
-          We can choose whether or not to show ANY content on our pages depending on if we are logged in or not. I talk more about SESSION variables in the login.inc.php file!
-          -->
-          <?php
-          if (!isset($_SESSION['id'])) {
-            echo '<p class="login-status">You are logged out!</p>';
-            echo '
-            <p class="login-status">
-              <h1>Produkt</h1>
-              <a href="img/dabo_web.png">
-                <img src="img/dabo_web.png" alt="Dabo Webbrowser" style="width:100%;height:100%;border:0">
-              </a><br>
-            </p><br>';
+<div class="card">
+  
 
-          }
-          else if (isset($_SESSION['id'])) {
-            // Paste the code here.
-            require "bookmarks.php"; 
-            
-          }
-          ?>
-        </section>
-      </div>
-    </main>
+        <!--
+        We can choose whether or not to show ANY content on our pages depending on if we are logged in or not. I talk more about SESSION variables in the login.inc.php file!
+        -->
+        <?php
+        if (!isset($_SESSION['id'])) {
+          echo '<p class="login-status">You are logged out!</p>';
+          echo '
+          <p class="login-status">
+            <h1>Produkt</h1>
+            <a href="img/dabo_web.png">
+              <img src="img/dabo_web.png" alt="Dabo Webbrowser" style="width:100%;height:100%;border:0">
+            </a><br>
+          </p><br>';
 
+        }
+        else if (isset($_SESSION['id'])) {
+          // Paste the code here.
+          require "bookmarks.php"; 
+          
+        }
+        ?>
+
+</div>
 <?php
   // And just like we include the header from a separate file, we do the same with the footer.
   require "footer.php";
