@@ -28,7 +28,7 @@ $(function(){
 				data:payload,
 				success: function(data) {
 					console.log(data);
-					window.location.reload();
+					// window.location.reload();
 				},
 				error: function(e) {
 					console.log(e);
@@ -46,12 +46,11 @@ $(function(){
 	}
 
 	$('#Modal').on('hidden.bs.modal', function () {
-		if ($('.modal-title').html() !== 'Upload Bookmark')
 		$(".modal-body").empty();
 	});
 
 	$('#fileupload').ajaxForm(function(data) {
-        console.log('data');
+        window.location.reload();
     });
 
 	$('#modal_button').click(async function(eve){
@@ -122,9 +121,8 @@ $(function(){
 					$('.modal-body').prepend($('<div>', {class: 'validation_red', text: 'All fields have to be filled!'}));
 					return;
 				}
-				$("#Modal").modal('hide');
 				var formData = new FormData($('#fileupload')[0]);
-				$(".modal-body").empty();
+				$("#Modal").modal('hide');
 				$.ajax({
 					url: 'db_manage.php',
 					type: 'POST',
@@ -132,6 +130,7 @@ $(function(){
 					contentType: false,
 					processData: false,
 					success: function(data) {
+						// window.location.reload();
 						console.log('success');
 					},
 					error: function(e) {
@@ -193,11 +192,11 @@ $(function(){
 		modal_view('Move', 'Move Bookmark');
 		var json = JSON.parse($(this).attr('value'));
 		var $form_group_name = $("<div>", {class: "form-group"});
-		var $category_select_label = $("<label>", {for: "category_name", text: 'Please select category for ' + json['LinkName'] + ':'});
+		var $category_select_label = $("<label>", {for: "category_name", text: 'Category for ' + json['LinkName'] + ':'});
         var $category_select = $("<select>", {id: "category_name", name: "category_select", class:"form-control"});
         var $category_header = $('<option>', {text: 'Please select a category option', selected:true, disabled: true});
         $category_select.append($category_header);
-		var categories = JSON.parse($('input[name=category_list]').val());
+		var categories = JSON.parse($('input[name=arranged_category_list]').val());
 		$.each(categories, function(val) {
 			if (json['category'] === val) $category = $('<option>', {value: val, text: val, selected:true});
 			else $category = $('<option>', {value: val, text: val});
@@ -209,6 +208,7 @@ $(function(){
 		$('select[name=category_select]').on('change', function(){
 			category_name = $('select[name=category_select]').val();
 		});
+		id = json['id'];
     });
 
     $('.category_edit').click(function(e){
@@ -243,9 +243,9 @@ $(function(){
         var $form_group_name = $("<div>", {class: "form-group"});
 		var $category_select_label = $("<label>", {for: "category_name", text: 'Position of ' + category + ':'});
         var $category_select = $("<select>", {id: "category_name", name: "category_name", class:"form-control"});
-        var $category_header = $('<option>', {text: 'Please select a category option', selected:true, disabled: true});
+        var $category_header = $('<option>', {text: 'Please select position of this category', selected:true, disabled: true});
         $category_select.append($category_header);
-		var category_positions = JSON.parse($('input[name=category_position]').val());
+		var category_positions = JSON.parse($('input[name=arranged_category_list]').val());
 		var all_info = JSON.parse($('input[name=all_info]').val());
 		$.each(all_info, function(key, value) {
 			if (value['category'] ===category){
@@ -253,11 +253,11 @@ $(function(){
 				return;
 			}
 		});
-		$.each(category_positions, function(key, category_position) {
-			if (category_position == position) $category = $('<option>', {value: category_position, text: category_position, selected: true});
-			else $category = $('<option>', {value: category_position, text: category_position});
+		for (let i=1; i<Object.keys(category_positions).length+1;i++){
+			$category = $('<option>', {value: i, text: i});
 			$category_select.append($category);
-		});
+		}
+		
         $form_group_name.append($category_select_label);
         $form_group_name.append($category_select);
 		$(".modal-body").append($form_group_name);
@@ -277,18 +277,23 @@ $(function(){
         $form_group_name.append($category_name);
         var $category_position_group = $("<div>", {class: "form-group"});
 		var $category_position_label = $("<label>", {for: "category_position", text: 'Position of New Category:'});
-        var $category_position = $("<input>", {id: "category_position", name: "category_position", class:"form-control", type: "number", placeholder:'Please input a number for position' });
+        var $category_position = $("<select>", {id: "category_position", name: "category_position", class:"form-control", placeholder:'Please input a number for position' });
+        var categories = JSON.parse($('input[name=arranged_category_list]').val()); 
+        for (let i=1; i<Object.keys(categories).length + 2; i++){
+        	var $option = $('<option>', {value:i, text:i});
+        	$category_position.append($option);
+        }
         $category_position_group.append($category_position_label);
         $category_position_group.append($category_position);
 		$(".modal-body").append($form_group_name);
 		$(".modal-body").append($category_position_group);
-
+		create_category_position = $('select[name=category_position]').val();
 		$('input[name=category_name]').on("change paste keyup" ,function(e){
 			e.preventDefault();
 			create_category_name = $(this).val();
 		});
 
-		$('input[name=category_position]').on("change paste keyup" ,function(e){
+		$('select[name=category_position]').on("change" ,function(e){
 			e.preventDefault();
 			create_category_position = $(this).val();
 		});
@@ -303,7 +308,7 @@ $(function(){
         var $filename = $("<input>", {id: "filename", name: "filename", class:"form-control", type: "file", placeholder: 'Please select file'});
         $form_group_file.append($file_label);
         $form_group_file.append($filename);
-		var category_list = JSON.parse($('input[name=category_list]').val());
+		var category_list = JSON.parse($('input[name=arranged_category_list]').val());
         var $form_group_category = $("<div>", {class: "form-group"});
 		var $category_name_label = $("<label>", {for: "category_name", text: 'Name of Category:'});
         var $category_name = $("<select>", {id: "category_name", name: "category_name", class:"form-control" });
@@ -322,7 +327,7 @@ $(function(){
         $form_group_linkname.append($linkname);
         var $form_group_linkposition = $("<div>", {class: "form-group"});
 		var $linkposition_label = $("<label>", {for: "linkposition", text: 'Position of Link:'});
-        var $linkposition = $("<input>", {id: "linkposition", name: "linkposition", class:"form-control", type: 'number', placeholder:'Please input a number for position' });
+        var $linkposition = $("<select>", {id: "linkposition", name: "linkposition", class:"form-control", placeholder:'Please input a number for position' });
         $form_group_linkposition.append($linkposition_label);
         $form_group_linkposition.append($linkposition);
         var $submit_button = $('<input>', {id: 'method', name: 'method', value:'bookmark_upload', hidden:true});
@@ -336,6 +341,22 @@ $(function(){
 		$('select[name=category_name]').on("change" ,function(e){
 			e.preventDefault();
 			upload_category = $(this).val();
+			$.ajax({
+				url: 'db_manage.php',
+				method: 'post',
+				data: {method: 'get_bookmarks', category_name: upload_category},
+				success: function(data) {
+					length_linkposition = JSON.parse(data).length;
+					$('#linkposition').empty();
+					for (let i=1; i<length_linkposition+2; i++) {
+			        	var $option = $('<option>', {value:i, text:i});
+			        	$('#linkposition').append($option);
+			        }
+				},
+				error: function(e) {
+					console.log(e);
+				}
+			});
 		});
 
 		$('input[name=linkname]').on("change paste keyup" ,function(e){
@@ -347,5 +368,10 @@ $(function(){
 			e.preventDefault();
 			upload_linkposition = $(this).val();
 		});
-	})
+	});
+
+	$('#menu>ul> li').click(function(e){
+		$('#menu>ul>li>ul').css('display', 'none');
+		$('#menu>ul>li:hover>ul').css('display', 'block');
+	});
 });

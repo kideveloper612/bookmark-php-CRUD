@@ -257,16 +257,17 @@ body {
 
 .parent-menu {
     background-color: #0c8fff;
-    min-width: 300px;
+    min-width: 200px;
     float: left;
 }
 
 #menu ul {
     list-style-type: none;
+    position: relative;
 }
 
 #menu ul li a {
-    padding: 10px 15px;
+    padding: 5px;
     display: block;
     color: #fff;
     text-decoration: none;
@@ -276,17 +277,8 @@ body {
     background-color: #007ee9;
 }
 
-#menu ul li:hover>ul {
-    left: 300px;
-    top: 0;
-    -webkit-transition: left 200ms ease-in;
-    -moz-transition: left 200ms ease-in;
-    -ms-transition: left 200ms ease-in;
-    transition: left 400ms ease-in;
-}
-
 #menu ul li {
-    position: relative;
+    /*position: relative;*/
     display: flex;
 }
 
@@ -294,13 +286,10 @@ body {
     position: absolute;
     background-color: #333;
     top: 0;
-    left: -2000px;
-    min-width: 800px;
+    left: 206px;
+    min-width: 30vw;
     z-index: -1;
-    -webkit-transition: left 200ms ease-in;
-    -moz-transition: left 200ms ease-in;
-    -ms-transition: left 200ms ease-in;
-    transition: left 400ms ease-in;
+    display: none;
 }
 
 #menu ul li>ul li a:hover {
@@ -363,4 +352,21 @@ a.bookmark_edit, a.bookmark_delete, a.bookmark_move {
 .validation_red {
   color: red;
   text-align: center;
+}
+
+.material-icons {
+  font-size: 13px;
+}
+
+
+@media only screen and (max-width: 600px) {
+  #menu ul li>ul {
+    position: absolute;
+    background-color: #333;
+    top: 100%;
+    left: 0px;
+    min-width: 35vw;
+    z-index: -1;
+    display: none;
+  }
 }

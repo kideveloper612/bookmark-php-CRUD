@@ -3,7 +3,6 @@
 
 function cmp($a, $b) {
     $c = $a['CategoryPosition'] - $b['CategoryPosition'];
-    $c .= strcmp($b['category'], $a['category']);
     $c .= $a['LinkPosition'] - $b['LinkPosition'];
     return $c;
 }
@@ -13,6 +12,7 @@ $result = $conn->query($sql);
 $all_info = array();
 $category_list = array();
 $category_position = array();
+$arranged_category_list = array();
 
 if ($result->num_rows > 0) {
     
@@ -23,7 +23,7 @@ if ($result->num_rows > 0) {
 
         if ($users == $session_user) {
             array_push($all_info,$row);
-            array_push($category_list, $row['category']);
+            array_push($category_list, [$row['category'], $row['CategoryPosition']]);
             array_push($category_position, $row['CategoryPosition']);
             }
         }
@@ -31,18 +31,26 @@ if ($result->num_rows > 0) {
 
 $conn->close();
 usort($all_info, 'cmp');
-$category_list = array_count_values($category_list);
+usort($category_list, function($a, $b){
+    return $a[1] - $b[1];
+});
+for ($index=0; $index < count($category_list); $index++) { 
+    array_push($arranged_category_list, $category_list[$index][0]);
+}
+
+$arranged_category_list = array_count_values($arranged_category_list);
 $category_position = array_unique($category_position);
 ?>
 
 <input type="text" name="category_list" value='<?= json_encode($category_list); ?>' hidden>
 <input type="text" name="category_position" value='<?= json_encode($category_position); ?>' hidden>
 <input type="text" name="all_info" value='<?= json_encode($all_info); ?>' hidden>
+<input type="text" name="arranged_category_list" value='<?= json_encode($arranged_category_list); ?>' hidden>
 <nav id="menu">
     <ul class="parent-menu">
         <?php 
             $count = 0;
-            foreach ($category_list as $category_name => $category_count) { ?>
+            foreach ($arranged_category_list as $category_name => $category_count) { ?>
             <li><a href="#" class="category_name"><?= $category_name ?></a>
                 <a class="category_edit" title="Edit" value="<?= $category_name; ?>"><i class="material-icons">&#xE254;</i></a>
                 <a class="category_delete" title="Delete" value="<?= $category_name; ?>"><i class="material-icons">&#xE872;</i></a>
@@ -51,7 +59,9 @@ $category_position = array_unique($category_position);
                     <?php 
                     for ($i=$count; $i<$count+$category_count; $i++) { ?>
                         <li>
+                            <?php if($all_info[$i]['LinkName'] !== 'New LinkName') {?>
                             <a href="<?= $all_info[$i]['adress']; ?>" class="bookmark_name" target="_blank"><?= $all_info[$i]['LinkName']; ?></a>
+
                             <a class="bookmark_edit" title="Edit" id="bookmark_edit" value='<?= json_encode($all_info[$i]); ?>'>
                                 <i class="material-icons">&#xE254;</i>
                             </a>
@@ -61,6 +71,7 @@ $category_position = array_unique($category_position);
                             <a class="bookmark_move" title="Move" id="bookmark_move" value='<?= json_encode($all_info[$i]); ?>'>
                                 <i class="material-icons">&#xe14d;</i>
                             </a>
+                            <?php } ?>
                         </li>
                     <?php } 
                         $count += $category_count;

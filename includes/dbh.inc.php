@@ -5,7 +5,7 @@ $dBPassword = "";
 $dBName = "bookmarks";
 
 // Create connection
-$conn = mysqli_connect($dBServername, $dBUsername, $dBPassword, $dBName, '3307');
+$conn = mysqli_connect($dBServername, $dBUsername, $dBPassword, $dBName);
 
 // Check connection
 if (!$conn) {
