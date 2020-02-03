@@ -358,6 +358,9 @@ a.bookmark_edit, a.bookmark_delete, a.bookmark_move {
   font-size: 13px;
 }
 
+.return_button {
+  display: none;
+}
 
 @media only screen and (max-width: 600px) {
   #menu ul li>ul {
@@ -365,8 +368,32 @@ a.bookmark_edit, a.bookmark_delete, a.bookmark_move {
     background-color: #333;
     top: 100%;
     left: 0px;
-    min-width: 35vw;
+    width: 63vw;
     z-index: -1;
     display: none;
   }
+  .card {
+    height: 450px;
+  }
+  .return_button {
+    display: block;
+  }
+  /*#menu>ul {
+    transform: translateY(-100%);
+  }
+  #menu>ul>li>ul {
+    display: none;
+  }
+  #menu>ul>li:hover>ul{
+    display: block;
+    top: 100%;
+    left: 0px;
+  }*/
 }
+
+@media only screen and (max-width: 320px) {
+   #menu ul li>ul {
+    width: 61vw;
+  }
+}
+

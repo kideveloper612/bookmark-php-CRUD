@@ -28,7 +28,7 @@ $(function(){
 				data:payload,
 				success: function(data) {
 					console.log(data);
-					// window.location.reload();
+					window.location.reload();
 				},
 				error: function(e) {
 					console.log(e);
@@ -130,7 +130,7 @@ $(function(){
 					contentType: false,
 					processData: false,
 					success: function(data) {
-						// window.location.reload();
+						window.location.reload();
 						console.log('success');
 					},
 					error: function(e) {
@@ -370,8 +370,19 @@ $(function(){
 		});
 	});
 
-	$('#menu>ul> li').click(function(e){
-		$('#menu>ul>li>ul').css('display', 'none');
-		$('#menu>ul>li:hover>ul').css('display', 'block');
+	$('#menu>ul>li').click(function(e){
+		e.preventDefault();
+		if ($('html').width() <= 600) {
+			$('#menu>ul').css({transform: 'translateY(-100%)'});
+			$('#menu>ul>li>ul').css('display', 'none');
+			$('#menu>ul>li:hover>ul').css({display: 'block', top: '100%', left: '0px'});
+		} else {
+			$('#menu>ul>li>ul').css('display', 'none');
+			$('#menu>ul>li:hover>ul').css('display', 'block');
+		}
 	});
+
+	$('.return_button').click(function(e) {
+		window.location.reload();
+	})
 });
