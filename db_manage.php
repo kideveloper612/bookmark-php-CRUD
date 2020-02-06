@@ -4,44 +4,8 @@ if (empty($_SESSION['id']))
 	header("Location: ./index.php");
 
 require './includes/dbh.inc.php';
-
-function file_upload(){
-	if (!file_exists('uploads/')) {
-	    mkdir('uploads/', 0777, true);
-	}
-
-	$target_dir = "uploads/";
-	$target_file = $target_dir . basename($_FILES["filename"]["name"]);
-	$uploadOk = 1;
-	// Check if image file is a actual image or fake image
-    $check = getimagesize($_FILES["filename"]["tmp_name"]);
-    if($check !== false) {
-        echo "File is " . $check["mime"] . ".";
-        $uploadOk = 1;
-    } else {
-        echo "Not exists file.";
-        $uploadOk = 0;
-    }
-	// Check if file already exists
-	if (file_exists($target_file)) {
-	    echo "Sorry, file already exists.";
-	    $uploadOk = 0;
-	}
-	// Check file size
-	if ($_FILES["filename"]["size"] > 500000) {
-	    echo "Sorry, your file is too large.";
-	    $uploadOk = 0;
-	}
-
-	// Check if $uploadOk is set to 0 by an error
-	if ($uploadOk == 0) {
-	    echo "Sorry, your file was not uploaded.";
-	// if everything is ok, try to upload file
-	} else {
-	    move_uploaded_file($_FILES["filename"]["tmp_name"], $target_file);
-	}
-	return $target_file;
-}
+// Assuming you installed from Composer:
+require "simplehtmldom_1_9_1/simple_html_dom.php";
 
 if (isset($_POST['method'])) {
 	$method = $_POST['method'];
@@ -138,25 +102,74 @@ switch ($method) {
 		mysqli_query($conn, $update_sql);
 		$sql = "INSERT INTO bookmarks (idUsers, category, LinkName, adress, CategoryPosition, LinkPosition) VALUES (".$_SESSION['id'].", '".$create_category_name."', 'New LinkName', 'New Link', ".$create_category_position.", 1)";
 		break;
-	case 'bookmark_upload':
-		$adress = file_upload();
-		$category_name = $_POST['category_name'];
-		$linkname = $_POST['linkname'];
-		$linkposition = $_POST['linkposition'];
-		$category_query = "SELECT CategoryPosition FROM bookmarks WHERE category='$category_name' limit 1";
-		$category_positions = mysqli_query($conn, $category_query);
-		$delete_sql = "DELETE FROM bookmarks WHERE category='$category_name' AND LinkName='New LinkName'";
-		mysqli_query($conn, $delete_sql);
-		if (mysqli_num_rows($category_positions) > 0) {
-            while($row = mysqli_fetch_assoc($category_positions)) {
-               $category_position = $row['CategoryPosition'];
+	case 'create_bookmark':
+		$create_bookmark_name = $_POST['create_bookmark_name'];
+		$create_bookmark_link = $_POST['create_bookmark_link'];
+		$create_bookmark_position = $_POST['create_bookmark_position'];
+		$category = $_POST['category_name_bookmark'];
+		$category_position_sql = "SELECT CategoryPosition FROM bookmarks WHERE category='$category' LIMIT 1";
+		$category_query = mysqli_query($conn, $category_position_sql);
+		if (mysqli_num_rows($category_query) > 0) {
+            while($row = mysqli_fetch_assoc($category_query)) {
+            	$create_category_position = $row['CategoryPosition'];
             }
 		}
-
-		$update_sql = "UPDATE bookmarks SET LinkPosition = LinkPosition + 1 WHERE LinkPosition >= $linkposition AND category = '$category_name'";
-		echo $update_sql;
+		$update_sql = "SELECT LinkPosition FROM bookmarks WHERE category='$category'";
+		$position_list = mysqli_query($conn, $update_sql);
+		$position_values = array();
+		if (mysqli_num_rows($position_list) > 0) {
+            while($row = mysqli_fetch_assoc($position_list)) {
+            	if(!in_array($row, $position_values))
+            		array_push($position_values, $row);
+            }
+		}
+		sort($position_values);
+		for($x = 1; $x < count($position_values)+1; $x++) { 
+		    $temp_sql = "UPDATE bookmarks SET LinkPosition=$x WHERE LinkPosition=".$position_values[$x-1]['LinkPosition'];
+		    mysqli_query($conn, $temp_sql);
+		}
+		$update_sql = "UPDATE bookmarks SET LinkPosition = LinkPosition + 1 WHERE LinkPosition >= $create_bookmark_position";
 		mysqli_query($conn, $update_sql);
-		$sql = "INSERT INTO bookmarks (idUsers, category, LinkName, adress, CategoryPosition, LinkPosition) VALUES (".$_SESSION['id'].", '".$category_name."', '".$linkname."', '".$adress."', ".$category_position.", $linkposition)";
+		$sql = "INSERT INTO bookmarks (idUsers, category, LinkName, adress, CategoryPosition, LinkPosition) VALUES (".$_SESSION['id'].", '".$category."', '$create_bookmark_name', '$create_bookmark_link', ".$create_category_position.", '$create_bookmark_position')";
+		echo $sql;
+		break;
+	case 'bookmark_upload':
+		$html = file_get_html($_FILES["filename"]["tmp_name"]);
+		$DTs = array();
+		foreach($html->find('DT>H3') as $DTH3) {
+			if (trim($DTH3->innertext) === 'Bookmarks bar') continue;
+			$DLP = $DTH3->parent()->next_sibling();
+			$key = $DTH3->innertext;
+			$bookmarks = array();
+			foreach ($DLP->find('DT>A') as $DTA) {
+				$bookmark = $DTA->innertext;
+				$address = $DTA->href;
+				array_push($bookmarks, [$bookmark, $address]);
+			}
+			$DTs[$key] = $bookmarks;
+		}
+		$current_category_position_sql = "SELECT CategoryPosition FROM bookmarks WHERE idUsers=".$_SESSION['id'];
+		$current_category_position = mysqli_query($conn, $current_category_position_sql);
+		$position_values = array();
+		if (mysqli_num_rows($current_category_position) > 0) {
+            while($row = mysqli_fetch_assoc($current_category_position)) {
+            	if(!in_array($row, $position_values))
+            		array_push($position_values, $row['CategoryPosition']);
+            }
+		}
+		$category_position = max($position_values);
+		foreach ($DTs as $category => $bookmarks) {
+			$category_position += 1;
+			$link_position = 0;
+			foreach ($bookmarks as $bookmark) {
+				$bookmark_name = $bookmark[0];
+				$bookmark_link = $bookmark[1];
+				$link_position += 1;
+				$sql = "INSERT INTO bookmarks (idUsers, category, LinkName, adress, CategoryPosition, LinkPosition) VALUES (".$_SESSION['id'].", '".$category."', '$bookmark_name', '$bookmark_link', ".$category_position.", '$link_position')";
+				mysqli_query($conn, $sql);
+			}
+		}
+		exit();
 		break;
 	case 'get_bookmarks':
 		$category_for_link = $_POST['category_name'];

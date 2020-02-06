@@ -273,7 +273,18 @@ body {
     text-decoration: none;
 }
 
-#menu ul li:hover {
+#menu>ul>li>a.category_edit:hover, 
+#menu>ul>li>a.category_delete:hover, 
+#menu>ul>li>a.category_move:hover {
+  cursor: pointer;
+  background-color: #6e6e6e;
+}
+
+.bookmark_add:hover {
+  cursor: pointer;
+  background-color: #7e7e7e!important;
+}
+#menu>ul>li:hover {
     background-color: #007ee9;
 }
 
@@ -294,6 +305,13 @@ body {
 
 #menu ul li>ul li a:hover {
     background-color: #2e2e2e;
+}
+
+#menu ul li>ul li a.bookmark_edit:hover, 
+#menu ul li>ul li a.bookmark_delete:hover,
+#menu ul li>ul li a.bookmark_move:hover {
+    background-color: #7e7e7e;
+    cursor: pointer;
 }
 
 #menu ul li>ul li a.bookmark_name {
@@ -330,19 +348,11 @@ footer {
     margin-right: auto;
 }
 
-a.category_edit, a.category_delete, a.category_move, 
-a.bookmark_edit, a.bookmark_delete, a.bookmark_move {
-    cursor: pointer;
-}
-
 #menu ul li>ul li {
     display: flex;
 }
 #menu ul li>ul li a.bookmark_name {
     margin-right: auto;
-}
-#menu ul>li>button:first-child {
-  margin-right: auto;
 }
 
 .modal-body {
@@ -378,22 +388,16 @@ a.bookmark_edit, a.bookmark_delete, a.bookmark_move {
   .return_button {
     display: block;
   }
-  /*#menu>ul {
-    transform: translateY(-100%);
-  }
-  #menu>ul>li>ul {
-    display: none;
-  }
-  #menu>ul>li:hover>ul{
-    display: block;
-    top: 100%;
-    left: 0px;
-  }*/
 }
 
 @media only screen and (max-width: 320px) {
    #menu ul li>ul {
     width: 61vw;
   }
+}
+
+button.uploadButton {
+  margin-left: auto!important;
+  margin-right: 5px!important;
 }
 

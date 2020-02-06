@@ -10,8 +10,8 @@ $(function(){
 	var delete_category = '';
 	var category_position = '';
 	var category_name_position = '';
-	var create_category_name = '';
-	var create_category_position = '';
+	var create_bookmark_name = '';
+	var create_bookmark_position = '';
 	var upload_category = '';
 	var upload_linkname = '';
 	var upload_linkposition = '';
@@ -19,6 +19,10 @@ $(function(){
 	var uploadcategory = '';
 	var uploadlinkname = '';
 	var uploadlinkposition = '';
+	var category_name_bookmark = '';
+	var new_bookmark_link = '';
+	var create_category_name = '';
+	var create_category_position ='' ;
 
 	function ajax_request(payload) {
 		return new Promise((resolve, reject) => {
@@ -102,6 +106,16 @@ $(function(){
 				var ajax_response = await ajax_request(data);
 				console.log(JSON.stringify(ajax_response));
 				break;
+			case 'Add Bookmark':
+				if (create_bookmark_name.length === 0 || create_bookmark_position.length === 0 || new_bookmark_link.length === 0 ) {
+					$('.modal-body').prepend($('<div>', {class: 'validation_red', text: 'All fields have to be filled!'}));
+					return;
+				}
+				$("#Modal").modal('hide');
+				var data = {'category_name_bookmark': category_name_bookmark, 'create_bookmark_name': create_bookmark_name, 'create_bookmark_link': new_bookmark_link, 'create_bookmark_position': create_bookmark_position, 'method': 'create_bookmark' };
+				var ajax_response = await ajax_request(data);
+				console.log(JSON.stringify(ajax_response));
+				break;
 			case 'Add Category':
 				if (create_category_name.length === 0 || create_category_position.length === 0) {
 					$('.modal-body').prepend($('<div>', {class: 'validation_red', text: 'All fields have to be filled!'}));
@@ -114,11 +128,8 @@ $(function(){
 				break;
 			case 'Upload Bookmark':
 				if (document.getElementById("filename").files) uploadfile = document.getElementById("filename").files.length;
-				if ($('#category_name').val()) uploadcategory = $('#category_name').val();
-				if ($('#linkname').val()) uploadlinkname = $('#linkname').val();
-				if ($('#linkposition').val()) uploadlinkposition = $('#linkposition').val();
-				if (uploadfile === 0 || uploadcategory.length === 0 || uploadlinkname.length === 0 || uploadlinkposition.length === 0 ) {
-					$('.modal-body').prepend($('<div>', {class: 'validation_red', text: 'All fields have to be filled!'}));
+				if (uploadfile === 0) {
+					$('.modal-body').prepend($('<div>', {class: 'validation_red', text: 'File has to be selected for upload!'}));
 					return;
 				}
 				var formData = new FormData($('#fileupload')[0]);
@@ -267,7 +278,69 @@ $(function(){
 		});
     });
 
-    $(".addButton").click(function (e) {
+    $(".bookmark_add").click(function (e) {
+		e.preventDefault();
+		category_name_bookmark = $(this).attr('value');
+		modal_view('Save', 'Add Bookmark');
+        var $form_group_name = $("<div>", {class: "form-group"});
+		var $bookmark_name_label = $("<label>", {for: "bookmark_name", text: 'Name of New Bookmark:'});
+        var $bookmark_name = $("<input>", {id: "bookmark_name", name: "bookmark_name", class:"form-control", placeholder: 'Please input new bookmark name' });
+        $form_group_name.append($bookmark_name_label);
+        $form_group_name.append($bookmark_name);
+        var $form_group_link = $("<div>", {class: "form-group"});
+		var $bookmark_link_label = $("<label>", {for: "bookmark_link", text: 'Link of New Bookmark:'});
+        var $bookmark_link = $("<input>", {id: "bookmark_link", name: "bookmark_link", class:"form-control", placeholder: 'Please input new bookmark link' });
+        $form_group_link.append($bookmark_link_label);
+        $form_group_link.append($bookmark_link);
+        var $bookmark_position_group = $("<div>", {class: "form-group"});
+		var $bookmark_position_label = $("<label>", {for: "bookmark_position", text: 'Position of New Bookmark:'});
+        var $bookmark_position = $("<select>", {id: "bookmark_position", name: "bookmark_position", class:"form-control", placeholder:'Please input a number for position' });
+        $.ajax({
+			url: 'db_manage.php',
+			method: 'post',
+			data: {method: 'get_bookmarks', category_name: $(this).attr('value')},
+			success: function(data) {
+				length_linkposition = JSON.parse(data).length;
+				$('#bookmark_position').empty();
+				if (length_linkposition === 0) {
+					$option = $('<option>', {value: '1', text: '1', selected:'selected'});
+					$('#bookmark_position').append($option);
+				} else {
+					for (let i=1; i<length_linkposition+2; i++) {
+						var $option = $('<option>', {value:i, text:i});
+	        			$('#bookmark_position').append($option);
+			        }
+				}
+				create_bookmark_position = '1';
+			},
+			error: function(e) {
+				console.log(e);
+			}
+		});
+        $bookmark_position_group.append($bookmark_position_label);
+        $bookmark_position_group.append($bookmark_position);
+		$(".modal-body").append($form_group_name);
+		$(".modal-body").append($form_group_link);
+		$(".modal-body").append($bookmark_position_group);
+		create_bookmark_position = $('select[name=bookmark_position]').val();
+		$('input[name=bookmark_name]').on("change paste keyup" ,function(e){
+			e.preventDefault();
+			create_bookmark_name = $(this).val();
+		});
+
+		$('input[name=bookmark_link]').on("change paste keyup" ,function(e){
+			e.preventDefault();
+			new_bookmark_link = $(this).val();
+		});
+
+		$('select[name=bookmark_position]').on("change" ,function(e){
+			e.preventDefault();
+			create_bookmark_position = $(this).val();
+
+		});
+	});
+
+	$(".addButton").click(function (e) {
 		e.preventDefault();
 		modal_view('Save', 'Add Category');
         var $form_group_name = $("<div>", {class: "form-group"});
@@ -308,56 +381,10 @@ $(function(){
         var $filename = $("<input>", {id: "filename", name: "filename", class:"form-control", type: "file", placeholder: 'Please select file'});
         $form_group_file.append($file_label);
         $form_group_file.append($filename);
-		var category_list = JSON.parse($('input[name=arranged_category_list]').val());
-        var $form_group_category = $("<div>", {class: "form-group"});
-		var $category_name_label = $("<label>", {for: "category_name", text: 'Name of Category:'});
-        var $category_name = $("<select>", {id: "category_name", name: "category_name", class:"form-control" });
-        var $option_header = $('<option>', {text: 'Please select a category option', selected:true, disabled: true});
-        $category_name.append($option_header);
-        $.each(category_list, function(val){
-        	var $option = $('<option>', {value: val, text: val});
-        	$category_name.append($option);
-        })
-        $form_group_category.append($category_name_label);
-        $form_group_category.append($category_name);
-        var $form_group_linkname = $("<div>", {class: "form-group"});
-		var $linkname_label = $("<label>", {for: "linkname", text: 'LinkName:'});
-        var $linkname = $("<input>", {id: "linkname", name: "linkname", class:"form-control", type: "text", placeholder: 'Please input LinkName' });
-        $form_group_linkname.append($linkname_label);
-        $form_group_linkname.append($linkname);
-        var $form_group_linkposition = $("<div>", {class: "form-group"});
-		var $linkposition_label = $("<label>", {for: "linkposition", text: 'Position of Link:'});
-        var $linkposition = $("<select>", {id: "linkposition", name: "linkposition", class:"form-control", placeholder:'Please input a number for position' });
-        $form_group_linkposition.append($linkposition_label);
-        $form_group_linkposition.append($linkposition);
         var $submit_button = $('<input>', {id: 'method', name: 'method', value:'bookmark_upload', hidden:true});
         $form_fileupload.append($form_group_file);
-        $form_fileupload.append($form_group_category);
-        $form_fileupload.append($form_group_linkname);
-        $form_fileupload.append($form_group_linkposition);
         $form_fileupload.append($submit_button);
         $('.modal-body').append($form_fileupload);
-
-		$('select[name=category_name]').on("change" ,function(e){
-			e.preventDefault();
-			upload_category = $(this).val();
-			$.ajax({
-				url: 'db_manage.php',
-				method: 'post',
-				data: {method: 'get_bookmarks', category_name: upload_category},
-				success: function(data) {
-					length_linkposition = JSON.parse(data).length;
-					$('#linkposition').empty();
-					for (let i=1; i<length_linkposition+2; i++) {
-			        	var $option = $('<option>', {value:i, text:i});
-			        	$('#linkposition').append($option);
-			        }
-				},
-				error: function(e) {
-					console.log(e);
-				}
-			});
-		});
 
 		$('input[name=linkname]').on("change paste keyup" ,function(e){
 			e.preventDefault();
@@ -384,5 +411,9 @@ $(function(){
 
 	$('.return_button').click(function(e) {
 		window.location.reload();
+	});
+
+	$('.bookmark_name').click(function(e) {
+		window.open( this.href, "_blank"); 
 	})
 });

@@ -57,6 +57,7 @@ $category_position = array_unique($category_position);
                 <a class="category_move" title="Move" value="<?= $category_name; ?>"><i class="material-icons">&#xe14d;</i></a>
                 <ul>
                     <li><button type="button" class="btn btn-success return_button">Return</button></li>
+                    <li><a class="bookmark_add" value="<?= $category_name ?>">Add Bookmark</a></li>
                     <?php 
                     for ($i=$count; $i<$count+$category_count; $i++) { ?>
                         <li>
