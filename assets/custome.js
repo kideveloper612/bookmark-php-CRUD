@@ -23,6 +23,8 @@ $(function(){
 	var new_bookmark_link = '';
 	var create_category_name = '';
 	var create_category_position ='' ;
+	var link_position = '';
+	var submethod = '';
 
 	function ajax_request(payload) {
 		return new Promise((resolve, reject) => {
@@ -80,7 +82,7 @@ $(function(){
 				break;
 			case 'Move Bookmark':
 				$("#Modal").modal('hide');
-				var data = {'id': id, 'category_name': category_name, 'method': 'move' }
+				var data = {'id': id, 'category_name': category_name, 'link_position': link_position, 'method': 'move' , 'submethod': submethod}
 				var ajax_response = await ajax_request(data);
 				console.log(JSON.stringify(ajax_response));
 				break;
@@ -205,20 +207,57 @@ $(function(){
 		var $form_group_name = $("<div>", {class: "form-group"});
 		var $category_select_label = $("<label>", {for: "category_name", text: 'Category for ' + json['LinkName'] + ':'});
         var $category_select = $("<select>", {id: "category_name", name: "category_select", class:"form-control"});
-        var $category_header = $('<option>', {text: 'Please select a category option', selected:true, disabled: true});
+        var $category_header = $('<option>', {value: 'Please select a category option', text: 'Please select a category option', selected:true, disabled: true});
         $category_select.append($category_header);
 		var categories = JSON.parse($('input[name=arranged_category_list]').val());
 		$.each(categories, function(val) {
-			if (json['category'] === val) $category = $('<option>', {value: val, text: val, selected:true});
+			if (json['category'] === val) $category = $('<option>', {value: val, text: val});
 			else $category = $('<option>', {value: val, text: val});
 			$category_select.append($category);
 		});
 		$form_group_name.append($category_select_label);
 		$form_group_name.append($category_select);
+		var $link_position_group = $("<div>", {class: 'form-group'});
+		var $link_position_label = $("<label>", {for: "linkPosition", text: 'Position of ' + json['LinkName'] + ':'});
+		var $link_position = $('<select>', {id: "linkPosition", name:'linkPosition', class:"form-control"});
+		var $link_header = $('<option>', {text: 'Please select a position', selected: true, disabled:true});
+		$link_position.append($link_header);
+		$link_position_group.append($link_position_label);
+		$link_position_group.append($link_position);
 		$(".modal-body").append($form_group_name);
+		$(".modal-body").append($link_position_group);
 		$('select[name=category_select]').on('change', function(){
 			category_name = $('select[name=category_select]').val();
+			$.ajax({
+				url: 'db_manage.php',
+				method: 'post',
+				data: {method: 'get_bookmarks', category_name: category_name},
+				success: function(data) {
+					link_position = '1';
+					length_linkposition = JSON.parse(data).length;
+					$('#linkPosition').empty();
+					if (length_linkposition === 0) {
+						$option = $('<option>', {value: '1', text: '1', selected:'selected'});
+						$('#linkPosition').append($option);
+					} else {
+						if (json['category'] === category_name) {
+							length_linkposition -= 1;
+							submethod = 'self';
+						}
+						for (let i=1; i<length_linkposition+2; i++) {
+							var $option = $('<option>', {value:i, text:i});
+		        			$('#linkPosition').append($option);
+				        }
+					}
+				},
+				error: function(e) {
+					console.log(e);
+				}
+			});
 		});
+		$('select[name=linkPosition]').on('change', function(){
+			link_position = $(this).val();
+		})
 		id = json['id'];
     });
 
@@ -268,7 +307,6 @@ $(function(){
 			$category = $('<option>', {value: i, text: i});
 			$category_select.append($category);
 		}
-		
         $form_group_name.append($category_select_label);
         $form_group_name.append($category_select);
 		$(".modal-body").append($form_group_name);

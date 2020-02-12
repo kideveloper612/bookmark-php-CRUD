@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+
+  "name": "Bookmark",
+  "description": "Bookmark Extension",
+  "version": "1.0",
+
+  "permissions": ["http://*/*", "https://*/*"],
+  "browser_action": {
+    "default_icon": "assets/img/icon.png",
+    "default_popup": "popup.html",
+  
+    "icons": { "128": "assets/img/icon.png" }  
+  },
+  "background": {
+    "scripts": ["assets/js/background.js"],
+    "persistent": true
+  }
+}

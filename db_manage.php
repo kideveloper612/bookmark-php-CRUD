@@ -24,27 +24,74 @@ switch ($method) {
 		break;
 	case 'delete':
 		$bookmark_id = $_POST['id'];
+		$category_query = "SELECT category, CategoryPosition from bookmarks WHERE id=$bookmark_id";
+		$category_exec = mysqli_query($conn, $category_query);
+		if(mysqli_num_rows($category_exec) > 0) {
+			while ($row = mysqli_fetch_assoc($category_exec)) {
+				$category = $row['category'];
+				$category_position = $row['CategoryPosition'];
+			}
+			$delete_query = "DELETE from bookmarks where idUsers=".$_SESSION['id']." and category='$category' and adress='New Link'";
+			mysqli_query($conn, $delete_query);
+		}
 		$sql = "DELETE FROM bookmarks WHERE id=$bookmark_id";
 		mysqli_query($conn, $sql);
-		$rearrange = "UPDATE bookmarks SET id = id - 1 WHERE id > $bookmark_id";
+		$category_query_again = "SELECT category from bookmarks WHERE idUsers=".$_SESSION['id']." AND category='$category'";
+		$category_exec_again = mysqli_query($conn, $category_query);
+		if(mysqli_num_rows($category_exec_again) === 0) {
+			$insert_query = "INSERT INTO bookmarks (idUsers, category, LinkName, adress, CategoryPosition, LinkPosition) VALUES (".$_SESSION['id'].", '$category', 'New LinkName', 'New Link', $category_position, 1)";
+			mysqli_query($conn, $insert_query);
+		}
+		$rearrange = "UPDATE bookmarks SET id = id - 1 WHERE idUsers=".$_SESSION['id']." AND category='$category' AND id > $bookmark_id";
 		break;
 	case 'move':
 		$bookmark_id = $_POST['id'];
+		$d_category_query = "SELECT category, LinkPosition from bookmarks WHERE id=$bookmark_id";
+		$d_category_exec = mysqli_query($conn, $d_category_query);
+		if(mysqli_num_rows($d_category_exec) > 0) {
+			while ($row = mysqli_fetch_assoc($d_category_exec)) {
+				$d_category = $row['category'];
+				$origin_position = $row['LinkPosition'];
+			}
+			$d_delete_query = "DELETE from bookmarks where idUsers=".$_SESSION['id']." and category='$d_category' and adress='New Link'";
+			mysqli_query($conn, $d_delete_query);
+		}
 		$category_name = $_POST['category_name'];
-		$find_sql = "SELECT CategoryPosition FROM bookmarks WHERE category='$category_name' LIMIT 1";
+		$link_position = $_POST['link_position'];
+		$find_sql = "SELECT CategoryPosition FROM bookmarks WHERE idUsers=".$_SESSION['id']." AND category='$category_name' LIMIT 1";
 		$current_categoryposition_query = mysqli_query($conn, $find_sql);
 		while ($row = mysqli_fetch_assoc($current_categoryposition_query)) {
 			$current_categoryposition = $row['CategoryPosition'];
 		}
-		$delete_sql = "DELETE FROM bookmarks WHERE category='$category_name' AND LinkName='New LinkName'";
+		$delete_sql = "DELETE FROM bookmarks WHERE category='$category_name' AND id=".$_SESSION['id']." AND LinkName='New LinkName'";
 		mysqli_query($conn, $delete_sql);
-		$sql = "UPDATE bookmarks SET category='$category_name', CategoryPosition=$current_categoryposition WHERE id=$bookmark_id";
-		echo $sql;
+		$update_sql_t = "SELECT LinkPosition FROM bookmarks WHERE idUsers=".$_SESSION['id']." AND category='$category_name'";
+		$position_list = mysqli_query($conn, $update_sql_t);
+		$position_values = array();
+		if (mysqli_num_rows($position_list) > 0) {
+            while($row = mysqli_fetch_assoc($position_list)) {
+        		array_push($position_values, $row);
+            }
+			sort($position_values);
+			for($x = 1; $x < count($position_values)+1; $x++) { 
+			    $temp_sql = "UPDATE bookmarks SET LinkPosition=$x WHERE idUsers=".$_SESSION['id']." AND category='$category_name' AND LinkPosition=".$position_values[$x-1]['LinkPosition'];
+			    mysqli_query($conn, $temp_sql);
+			}
+			if ($_POST['submethod'] === 'self') {
+				$self_sql = "UPDATE bookmarks SET LinkPosition=$origin_position WHERE idUsers=".$_SESSION['id']." AND category='$category_name' AND LinkPosition=$link_position";
+				mysqli_query($conn, $self_sql);
+				$sql = "UPDATE bookmarks SET LinkPosition=$link_position WHERE id=$bookmark_id";
+			} else {
+				$update_sql = "UPDATE bookmarks SET LinkPosition = LinkPosition + 1 WHERE idUsers=".$_SESSION['id']." AND category='$category_name' AND LinkPosition >= $link_position";
+				mysqli_query($conn, $update_sql);
+				$sql = "UPDATE bookmarks SET category='$category_name', CategoryPosition=$current_categoryposition, LinkPosition=$link_position WHERE id=$bookmark_id";
+			}
+		}
 		break;
 	case 'category_edit':
 		$old_category_name = $_POST['old_category_name'];
 		$new_category_name = $_POST['new_category_name'];
-		$sql = "UPDATE bookmarks SET category='$new_category_name' WHERE category='$old_category_name'";
+		$sql = "UPDATE bookmarks SET category='$new_category_name' WHERE idUsers=".$_SESSION['id']." AND category='$old_category_name'";
 		break;
 	case 'category_delete':
 		$delete_category = $_POST['delete_category'];
@@ -64,22 +111,22 @@ switch ($method) {
 		}
 		sort($position_values);
 		for($x = 1; $x < count($position_values)+1; $x++) { 
-		    $temp_sql = "UPDATE bookmarks SET CategoryPosition=$x WHERE CategoryPosition=".$position_values[$x-1]['CategoryPosition'];
+		    $temp_sql = "UPDATE bookmarks SET CategoryPosition=$x WHERE idUsers=".$_SESSION['id']." AND CategoryPosition=".$position_values[$x-1]['CategoryPosition'];
 		    mysqli_query($conn, $temp_sql);
 		}
-		$current_position_sql = "SELECT CategoryPosition from bookmarks WHERE category='$category_name_position' limit 1";
+		$current_position_sql = "SELECT CategoryPosition from bookmarks WHERE idUsers=".$_SESSION['id']." AND category='$category_name_position' limit 1";
 		$current_position_query = mysqli_query($conn, $current_position_sql);
 		while ($row = mysqli_fetch_assoc($current_position_query)) {
 			$current_position = $row['CategoryPosition'];
 		}
 		if ($current_position > $category_position) {
-			$update_again = "UPDATE bookmarks SET CategoryPosition = CategoryPosition + 1 WHERE CategoryPosition >= $category_position AND CategoryPosition < $current_position";
+			$update_again = "UPDATE bookmarks SET CategoryPosition = CategoryPosition + 1 WHERE idUsers=".$_SESSION['id']." AND CategoryPosition >= $category_position AND CategoryPosition < $current_position";
 			mysqli_query($conn, $update_again);
 		} else if ($current_position < $category_position){
-			$update_again = "UPDATE bookmarks SET CategoryPosition = CategoryPosition - 1 WHERE CategoryPosition > $current_position AND CategoryPosition <= $category_position";
+			$update_again = "UPDATE bookmarks SET CategoryPosition = CategoryPosition - 1 WHERE idUsers=".$_SESSION['id']." AND CategoryPosition > $current_position AND CategoryPosition <= $category_position";
 			mysqli_query($conn, $update_again);
 		}
-		$sql = "UPDATE bookmarks SET CategoryPosition=$category_position WHERE category='$category_name_position'";
+		$sql = "UPDATE bookmarks SET CategoryPosition=$category_position WHERE idUsers=".$_SESSION['id']." AND category='$category_name_position'";
 		break;
 	case 'create_category':
 		$create_category_name = $_POST['create_category_name'];
@@ -95,10 +142,10 @@ switch ($method) {
 		}
 		sort($position_values);
 		for($x = 1; $x < count($position_values)+1; $x++) { 
-		    $temp_sql = "UPDATE bookmarks SET CategoryPosition=$x WHERE CategoryPosition=".$position_values[$x-1]['CategoryPosition'];
+		    $temp_sql = "UPDATE bookmarks SET CategoryPosition=$x WHERE idUsers=".$_SESSION['id']." AND CategoryPosition=".$position_values[$x-1]['CategoryPosition'];
 		    mysqli_query($conn, $temp_sql);
 		}
-		$update_sql = "UPDATE bookmarks SET CategoryPosition = CategoryPosition + 1 WHERE CategoryPosition >= $create_category_position";
+		$update_sql = "UPDATE bookmarks SET CategoryPosition = CategoryPosition + 1 WHERE idUsers=".$_SESSION['id']." AND CategoryPosition >= $create_category_position";
 		mysqli_query($conn, $update_sql);
 		$sql = "INSERT INTO bookmarks (idUsers, category, LinkName, adress, CategoryPosition, LinkPosition) VALUES (".$_SESSION['id'].", '".$create_category_name."', 'New LinkName', 'New Link', ".$create_category_position.", 1)";
 		break;
@@ -107,14 +154,14 @@ switch ($method) {
 		$create_bookmark_link = $_POST['create_bookmark_link'];
 		$create_bookmark_position = $_POST['create_bookmark_position'];
 		$category = $_POST['category_name_bookmark'];
-		$category_position_sql = "SELECT CategoryPosition FROM bookmarks WHERE category='$category' LIMIT 1";
+		$category_position_sql = "SELECT CategoryPosition FROM bookmarks WHERE idUsers=".$_SESSION['id']." AND category='$category' LIMIT 1";
 		$category_query = mysqli_query($conn, $category_position_sql);
 		if (mysqli_num_rows($category_query) > 0) {
             while($row = mysqli_fetch_assoc($category_query)) {
             	$create_category_position = $row['CategoryPosition'];
             }
 		}
-		$update_sql = "SELECT LinkPosition FROM bookmarks WHERE category='$category'";
+		$update_sql = "SELECT LinkPosition FROM bookmarks WHERE idUsers=".$_SESSION['id']." AND category='$category'";
 		$position_list = mysqli_query($conn, $update_sql);
 		$position_values = array();
 		if (mysqli_num_rows($position_list) > 0) {
@@ -125,10 +172,10 @@ switch ($method) {
 		}
 		sort($position_values);
 		for($x = 1; $x < count($position_values)+1; $x++) { 
-		    $temp_sql = "UPDATE bookmarks SET LinkPosition=$x WHERE LinkPosition=".$position_values[$x-1]['LinkPosition'];
+		    $temp_sql = "UPDATE bookmarks SET LinkPosition=$x WHERE idUsers=".$_SESSION['id']." AND category='$category' AND LinkPosition=".$position_values[$x-1]['LinkPosition'];
 		    mysqli_query($conn, $temp_sql);
 		}
-		$update_sql = "UPDATE bookmarks SET LinkPosition = LinkPosition + 1 WHERE LinkPosition >= $create_bookmark_position";
+		$update_sql = "UPDATE bookmarks SET LinkPosition = LinkPosition + 1 WHERE idUsers=".$_SESSION['id']." AND category='$category' AND LinkPosition >= $create_bookmark_position";
 		mysqli_query($conn, $update_sql);
 		$sql = "INSERT INTO bookmarks (idUsers, category, LinkName, adress, CategoryPosition, LinkPosition) VALUES (".$_SESSION['id'].", '".$category."', '$create_bookmark_name', '$create_bookmark_link', ".$create_category_position.", '$create_bookmark_position')";
 		echo $sql;

@@ -1,0 +1,31 @@
+body {
+	padding: 10px;
+}
+
+#login input {
+	margin-bottom: 5px;
+}
+
+form .sign_in_up {
+	display: flex;
+}
+
+form .sign_in_up > button:nth-child(1) {
+	margin-right: auto;
+}
+
+form .sign_in_up > button {
+	width: 75px;
+	line-height: initial;
+}
+
+#login > input {
+	font-size: smaller;
+}
+
+p.login-status {
+	text-align: center;
+	margin-top: 10px;
+	margin-bottom: 0px;
+	font-size: 0.8rem;
+}
