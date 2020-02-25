@@ -9,11 +9,20 @@
   "browser_action": {
     "default_icon": "assets/img/icon.png",
     "default_popup": "popup.html",
-  
-    "icons": { "128": "assets/img/icon.png" }  
+    "default_title": "Bookmark",
+    "icons": "assets/img/icon.png"
   },
   "background": {
     "scripts": ["assets/js/background.js"],
-    "persistent": true
-  }
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": ["assets/js/jquery.min.js", "assets/js/content.js", "assets/js/bootstrap.min.js"],
+      "css": ["assets/css/bootstrap.min.css", "assets/css/style.css"]
+    }
+  ]
 }

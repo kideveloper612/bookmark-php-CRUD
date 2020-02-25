@@ -1,6 +1,6 @@
 
 <?php
-
+require '../../includes/dbh.inc.php';
 function cmp($a, $b) {
     $c = $a['CategoryPosition'] - $b['CategoryPosition'];
     $c .= $a['LinkPosition'] - $b['LinkPosition'];
@@ -56,7 +56,6 @@ $category_position = array_unique($category_position);
                 <a class="category_delete" title="Delete" value="<?= $category_name; ?>"><i class="material-icons">&#xE872;</i></a>
                 <a class="category_move" title="Move" value="<?= $category_name; ?>"><i class="material-icons">&#xe14d;</i></a>
                 <ul>
-                    <li><button type="button" class="btn btn-success return_button">Return</button></li>
                     <li><a class="bookmark_add" value="<?= $category_name ?>">Add Bookmark</a></li>
                     <?php 
                     for ($i=$count; $i<$count+$category_count; $i++) { ?>
@@ -81,9 +80,9 @@ $category_position = array_unique($category_position);
                 </ul>
             </li>
         <?php } ?>
-        <li>
-            <button type="button" class="btn btn-info addButton"><i class="fa fa-bookmark"></i>&nbsp;Add</button>
-            <button type="button" class="btn btn-info uploadButton"><i class="fa fa-upload"></i>&nbsp;Upload</button>
+        <li class="button_group">
+            <button type="button" class="addButton">Add</button>
+            <button type="button" class="uploadButton">Upload</button>
         </li>
     </ul>
 </nav>
