@@ -1,0 +1,39 @@
+{
+  "manifest_version": 2,
+  "author": "Extension Developer",
+  "name": "DABOS",
+  "description": "DABOS Extension",
+  "version": "1.0",
+
+  "permissions": [
+    "http://*/*", 
+    "https://*/*",
+    "tabs",
+    "Webrequest"
+  ],
+  "browser_action": {
+    "default_icon": {
+      "20": "assets/img/icon.png",
+      "40": "assets/img/icon.png"
+    },
+    "default_popup": "popup.html",
+    "default_title": "DABOS"
+  },
+  "icons": {
+    "25": "assets/img/icon.png",
+    "48": "assets/img/icon.png"
+  },
+  "background": {
+    "scripts": ["assets/js/background.js"],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": ["assets/js/jquery.min.js", "assets/js/content.js", "assets/js/bootstrap.min.js"],
+      "css": ["assets/css/bootstrap.min.css", "assets/css/style.css"]
+    }
+  ]
+}

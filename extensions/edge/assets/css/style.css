@@ -1,0 +1,126 @@
+body.extension_body {
+	padding: 10px 20px 10px 10px;
+	/*max-width: 800px;*/
+	display: block;
+
+}
+
+body.extension_bodybody.extension_body#login input, #signup input{
+	margin-bottom: 5px;
+}
+
+body.extension_bodyform .sign_in_up {
+	display: flex;
+}
+
+body.extension_bodyform .sign_in_up > button:nth-child(1) {
+	margin-right: auto;
+}
+
+body.extension_bodyform .sign_in_up > button {
+	width: 75px;
+	line-height: initial;
+}
+
+body.extension_body#login > input, #signup > input {
+	font-size: smaller;
+}
+
+body.extension_bodyp.login-status {
+	text-align: center;
+	margin-top: 10px;
+	margin-bottom: 0px;
+	font-size: 0.8rem;
+}
+
+body.extension_body a.sign_up_button, a.sign_up_click, a.log_in_button, a.log_in_click {
+	cursor: pointer;
+}
+
+body.extension_body a.sign_up_button:hover, a.sign_up_click:hover, a.log_in_button:hover, a.log_in_click:hover {
+	text-decoration: underline;
+	color: blue;
+}
+
+body.extension_body button.addButton, button.uploadButton {
+
+}
+
+i.material-icons {
+	font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 13px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+
+body.extension_body li.button_group {
+	display: flex;
+	font-size: 0.8em;
+}
+
+body.extension_body li.button_group button {
+	width: 60px;
+}
+
+body.extension_body li.button_group > button.uploadButton {
+	margin-left: auto;
+}
+
+body.extension_body button[name=login-submit] {
+	font-size: 0.8em;
+}
+
+body.extension_body #menu ul li a {
+	text-decoration: none;
+}
+
+body.extension_body #menu  ul  li a:hover {
+	background-color: #aaa;
+	cursor: pointer;
+}
+
+body.extension_body #menu ul {
+	list-style-type: none;
+    -webkit-padding-start: 0px;
+	-khtml-padding-start: 0px;
+	-o-padding-start: 0px;
+    margin-bottom: 0;
+}
+
+body.extension_body #menu > ul > li > ul {
+	padding-inline-start: 15px;
+	padding-inline-end: 5px;
+}
+
+body.extension_body #menu > ul > li > ul > li {
+	background-color: #eee;
+}
+
+body.extension_body #logout > button {
+	margin-bottom: 5px;
+}
+
+body.extension_body .button_group button {
+	margin-top: 5px;
+}
+
+body.extension_body #menu > ul > li > a.category_edit,
+body.extension_body #menu > ul > li > a.category_move,
+body.extension_body #menu > ul > li > a.category_delete {
+	float: right;
+}
+
+body.extension_body #bookmark_edit,
+#bookmark_move,
+#bookmark_delete {
+	float: right;
+}

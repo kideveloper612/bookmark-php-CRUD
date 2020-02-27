@@ -3,9 +3,9 @@ session_start();
 if (empty($_SESSION['id']))
 	header("Location: ./index.php");
 
-require './includes/dbh.inc.php';
+require 'extension_db_connect.php';
 // Assuming you installed from Composer:
-require "simplehtmldom_1_9_1/simple_html_dom.php";
+// require "./../../simplehtmldom_1_9_1/simple_html_dom.php";
 
 if (isset($_POST['method'])) {
 	$method = $_POST['method'];
@@ -192,17 +192,6 @@ switch ($method) {
 				$bookmark = $DTA->innertext;
 				$address = $DTA->href;
 				array_push($bookmarks, [$bookmark, $address]);
-			}
-			$DTs[$key] = $bookmarks;
-		}
-		$tmp_array = array();
-		foreach (array_reverse($DTs) as $key => $value) {
-			$bookmarks = array();
-			for ($i=0; $i<count($value); $i++) {
-				if (!in_array($value[$i], $tmp_array)) {
-					array_push($bookmarks, $value[$i]);
-					array_push($tmp_array, $value[$i]);
-				}
 			}
 			$DTs[$key] = $bookmarks;
 		}
