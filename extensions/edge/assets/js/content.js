@@ -39,12 +39,12 @@ function modal_view(button_name, header) {
 function ajax_request(payload) {
 	return new Promise((resolve, reject) => {
 		$.ajax({
-			url: 'http://dabos.se/extension/api/extension_db_manage.php',
+			url: 'https://dabos.se/extension/api/extension_db_manage.php',
 			type: 'POST',
 			data:payload,
 			success: function(data) {
 				console.log(data);
-				window.location.reload();
+				// window.location.reload();
 			},
 			error: function(e) {
 				console.log(e);
@@ -136,13 +136,13 @@ $('#Modal_Bookmark #modal_button').click(async function(eve){
 			var formData = new FormData($('#Modal_Bookmark #fileupload')[0]);
 			$("#Modal_Bookmark").modal('hide');
 			$.ajax({
-				url: 'http://dabos.se/extension/api/extension_db_manage.php',
+				url: 'https://dabos.se/extension/api/extension_db_manage.php',
 				type: 'POST',
 				data:formData,
 				contentType: false,
 				processData: false,
 				success: function(data) {
-					window.location.reload();
+					// window.location.reload();
 					console.log('success');
 				},
 				error: function(e) {
@@ -176,7 +176,7 @@ browser.runtime.onMessage.addListener(
 			var $bookmark_position_label = $("<label>", {for: "bookmark_position", text: 'Position of New Bookmark:'});
 		    var $bookmark_position = $("<select>", {id: "bookmark_position", name: "bookmark_position", class:"form-control", placeholder:'Please input a number for position' });
 		    $.ajax({
-				url: 'http://dabos.se/extension/api/extension_db_manage.php',
+				url: 'https://dabos.se/extension/api/extension_db_manage.php',
 				method: 'post',
 				data: {method: 'get_bookmarks', category_name: category_name_bookmark},
 				success: function(data) {
@@ -286,7 +286,7 @@ browser.runtime.onMessage.addListener(
 			$('#Modal_Bookmark select[name=category_select]').on('change', function(){
 				category_name_move = $('#Modal_Bookmark select[name=category_select]').val();
 				$.ajax({
-					url: 'http://dabos.se/extension/api/extension_db_manage.php',
+					url: 'https://dabos.se/extension/api/extension_db_manage.php',
 					method: 'post',
 					data: {method: 'get_bookmarks', category_name: category_name_move},
 					success: function(data) {
@@ -338,6 +338,7 @@ browser.runtime.onMessage.addListener(
 			delete_category = category_name;
 		} else if (request.message === 'category_move') {
 			$("#Modal_Bookmark").modal('hide');
+			alert('test');
 			modal_view('Move', 'Move Category');
 	        var position;
 	        var category = request.category;
@@ -398,7 +399,7 @@ browser.runtime.onMessage.addListener(
 		} else if (request.message === 'bookmark_upload') {
 			$("#Modal_Bookmark").modal('hide');
 			modal_view('Upload', 'Upload Bookmark');
-			var $form_fileupload = $('<form>', {id:'fileupload', action:'http://dabos.se/extension/api/extension_db_manage.php', method: 'post', enctype:"multipart/form-data"});
+			var $form_fileupload = $('<form>', {id:'fileupload', action:'https://dabos.se/extension/api/extension_db_manage.php', method: 'post', enctype:"multipart/form-data"});
 			var $form_group_file = $("<div>", {class: "form-group"});
 			var $file_label = $("<label>", {for: "filename", text: 'Input File:'});
 	        var $filename = $("<input>", {id: "filename", name: "filename", class:"form-control", type: "file", placeholder: 'Please select file'});

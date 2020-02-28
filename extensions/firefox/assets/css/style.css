@@ -1,4 +1,4 @@
-body {
+body.extension_body {
 	padding: 10px;
 	/*width: 200px;*/
 	display: block;
@@ -78,27 +78,27 @@ button[name=login-submit] {
 	font-size: 0.8em;
 }
 
-#menu ul li a {
+body.extension_body #menu ul li a {
 	text-decoration: none;
 }
 
-#menu  ul  li a:hover {
+body.extension_body #menu  ul  li a:hover {
 	background-color: #aaa;
 	cursor: pointer;
 }
 
-#menu ul {
+body.extension_body #menu ul {
 	list-style-type: none;
     padding-inline-start: 0px;
     margin-bottom: 0;
 }
 
-#menu > ul > li > ul {
+body.extension_body #menu > ul > li > ul {
 	padding-inline-start: 15px;
 	padding-inline-end: 5px;
 }
 
-#menu > ul > li > ul > li {
+body.extension_body #menu > ul > li > ul > li {
 	background-color: #eee;
 }
 

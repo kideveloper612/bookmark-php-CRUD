@@ -4,23 +4,25 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	function click_events() {
-		$('#menu > ul > li').on('click', function(e){
+		$('.extension_body #menu > ul > li >:first-child').on('click', function(e){
 			e.stopPropagation();
-			$(this).find('ul').toggle();
-			$('body').css('width', '300px');
+			if (e.target.tagName.toUpperCase() !== 'BUTTON') {
+				$(this).parent().find('ul').toggle();
+				$('body.extension_body').css('width', '300px');
+			}
 		});
 		
 		$('.sign_up_button').click( function(e){
-			$('#login').hide();
-			$('#signup').show();
-			$('body').css('width', '');
+			$('.extension_body #login').hide();
+			$('.extension_body #signup').show();
+			$('body.extension_body').css('width', '');
 		});
 		$('.log_in_button').click( function(e){
-			$('#login').show();
-			$('#signup').hide();
-			$('body').css('width', '');
+			$('.extension_body #login').show();
+			$('.extension_body #signup').hide();
+			$('body.extension_body').css('width', '');
 		});
-		$("a.bookmark_add").click( function (e) {
+		$(".extension_body a.bookmark_add").click( function (e) {
 			e.preventDefault();
 			var category_name = $(this).attr('value');
 			browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -28,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				browser.tabs.sendMessage(activeTab.id, {"message": "bookmark_add", 'category_name': category_name});
 			});
 		});
-		$("a.bookmark_edit").click( function(e) {
+		$(".extension_body a.bookmark_edit").click( function(e) {
 			e.preventDefault();
 			var json = $(this).attr('value');
 			browser.tabs.query({active:true, currentWindow: true}, function(tabs) {
@@ -36,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				browser.tabs.sendMessage(activeTab.id, {"message": "bookmark_edit", 'json_data': json});
 			});
 		});
-		$('a.bookmark_delete').click( function(e) {
+		$('.extension_body a.bookmark_delete').click( function(e) {
 			e.preventDefault();
 			var json = JSON.parse($(this).attr('value'));
 			browser.tabs.query({active:true, currentWindow: true}, function(tabs) {
@@ -44,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				browser.tabs.sendMessage(activeTab.id, {"message": "bookmark_delete", 'json_data': json});
 			});
 		});
-		$('a.bookmark_move').click( function(e) {
+		$('.extension_body a.bookmark_move').click( function(e) {
 			e.preventDefault();
 			var json = JSON.parse($(this).attr('value'));
 			var categories = JSON.parse($('input[name=arranged_category_list]').val());
@@ -53,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				browser.tabs.sendMessage(activeTab.id, {"message": "bookmark_move", 'json_data': json, 'categories': categories});
 			});
 		});
-		$('a.category_edit').click( function(e) {
+		$('.extension_body a.category_edit').click( function(e) {
 			e.preventDefault();
 			var old_category_name = $(this).attr('value');
 			browser.tabs.query({active:true, currentWindow: true}, function(tabs) {
@@ -61,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				browser.tabs.sendMessage(activeTab.id, {"message": "category_edit", 'old_category_name': old_category_name});
 			});
 		});
-		$('a.category_delete').click( function(e) {
+		$('.extension_body a.category_delete').click( function(e) {
 			e.preventDefault();
 			var category_name = $(this).attr('value');
 			browser.tabs.query({active:true, currentWindow: true}, function(tabs) {
@@ -69,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				browser.tabs.sendMessage(activeTab.id, {"message": "category_delete", 'category_name': category_name});
 			});
 		});
-		$('a.category_move').click( function(e) {
+		$('.extension_body a.category_move').click( function(e) {
 			e.preventDefault();
 			var category = $(this).attr('value');
 			var category_positions = JSON.parse($('input[name=arranged_category_list]').val());
@@ -79,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				browser.tabs.sendMessage(activeTab.id, {"message": "category_move", 'category': category, 'category_positions': category_positions, 'all_info': all_info});
 			});
 		});
-		$('button.addButton').click( function(e) {
+		$('.extension_body button.addButton').click( function(e) {
 			e.preventDefault();
 			var categories = JSON.parse($('input[name=arranged_category_list]').val());
 			browser.tabs.query({active:true, currentWindow: true}, function(tabs) {
@@ -87,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				browser.tabs.sendMessage(activeTab.id, {"message": "category_add", 'categories': categories});
 			});
 		});
-		$('button.uploadButton').click( function(e) {
+		$('.extension_body button.uploadButton').click( function(e) {
 			e.preventDefault();
 			browser.tabs.query({active:true, currentWindow: true}, function(tabs) {
 				var activeTab = tabs[0];
@@ -99,13 +101,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	function ajax_requests(data) {
 		$('#logout').on('click', function(){
 			$.ajax({
-				url: 'http://dabos.se/extension/api/extension_logout.php',
+				url: 'https://dabos.se/extension/api/extension_logout.php',
 				type: 'get',
 				success: function(data) {
-					$('body > header').remove();
-					$('body #menu').remove();
-					$('body').prepend(data);
-					$('body').css('width', '');
+					$('body.extension_body > header').remove();
+					$('body.extension_body #menu').remove();
+					$('body.extension_body').prepend(data);
+					$('body.extension_body').css('width', '');
 				},
 				error: function(e) {
 					console.log(e);
@@ -113,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			});
 		});
 		$("#signup").ajaxForm({
-			url: 'http://dabos.se/extension/api/extension_signup.php',
+			url: 'https://dabos.se/extension/api/extension_signup.php',
 			type: 'post',
 			success: function(data) {
 				$('body > header').remove();
@@ -126,23 +128,22 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	function event_module(data) {
-		$('body > header').remove();
-		$('body').prepend(data);
-		$('#menu > ul > li > ul').toggle();
-		$('body').css('width', '');
+		$('body.extension_body > header').remove();
+		$('body.extension_body ').prepend(data);
+		$('.extension_body #menu > ul > li > ul').toggle();
 		jquery_css();
 		click_events();
 		ajax_requests(data);
 	}
 	
 	$.ajax({
-		url: 'http://dabos.se/extension/api/extension_index.php',
+		url: 'https://dabos.se/extension/api/extension_index.php',
 		method: 'post',
 		data: {'type': 'landing'},
 		success: function(data) {
 			event_module(data);
 			$("#login").ajaxForm({
-				url: 'http://dabos.se/extension/api/extension_login.php', 
+				url: 'https://dabos.se/extension/api/extension_login.php', 
 				type: 'post',
 				success: function(data) {
 					event_module(data);

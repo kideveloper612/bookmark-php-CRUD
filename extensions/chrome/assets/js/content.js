@@ -44,7 +44,7 @@ function ajax_request(payload) {
 			data:payload,
 			success: function(data) {
 				console.log(data);
-				// window.location.reload();
+				window.location.reload();
 			},
 			error: function(e) {
 				console.log(e);

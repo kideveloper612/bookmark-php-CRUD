@@ -4,28 +4,28 @@ body.extension_body {
 	display: block;
 }
 
-body.extension_bodybody.extension_body#login input, #signup input{
+body.extension_body #login input, #signup input{
 	margin-bottom: 5px;
 }
 
-body.extension_bodyform .sign_in_up {
+body.extension_body form .sign_in_up {
 	display: flex;
 }
 
-body.extension_bodyform .sign_in_up > button:nth-child(1) {
+body.extension_body form .sign_in_up > button:nth-child(1) {
 	margin-right: auto;
 }
 
-body.extension_bodyform .sign_in_up > button {
+body.extension_body form .sign_in_up > button {
 	width: 75px;
 	line-height: initial;
 }
 
-body.extension_body#login > input, #signup > input {
+body.extension_body #login > input, #signup > input {
 	font-size: smaller;
 }
 
-body.extension_bodyp.login-status {
+body.extension_body p.login-status {
 	text-align: center;
 	margin-top: 10px;
 	margin-bottom: 0px;
@@ -121,3 +121,17 @@ body.extension_body #bookmark_edit,
 #bookmark_delete {
 	float: right;
 }
+
+body.extension_body .sign_in_up {
+	display: flex;
+    justify-content: space-between;
+}
+
+body.extension_body form > div:nth-child(1), 
+body.extension_body form > div:nth-child(2)
+{
+	margin-bottom: 5px;
+}
+
+
+/*Modal*/

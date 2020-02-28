@@ -5,14 +5,15 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 	function click_events() {
-		$('#menu > ul > li').on('click', function(e){
+		$('#menu > ul > li >:first-child').on('click', function(e){
 			e.stopPropagation();
-			$(this).find('ul').toggle();
-			if (e.target['type'] !== 'button') {
-				$('body').css('width', '300px');
+			if (e.target.tagName.toUpperCase() !== 'BUTTON') {
+				$(this).parent().find('ul').toggle();
+				if (e.target['type'] !== 'button') {
+					$('body').css('width', '300px');
+				}
 			}
 		});
-		
 		$('.sign_up_button').click( function(e){
 			$('#login').hide();
 			$('#signup').show();
