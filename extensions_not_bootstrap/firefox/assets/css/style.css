@@ -1,0 +1,436 @@
+body.extension_body {
+	padding: 10px;
+	/*width: 200px;*/
+	display: block;
+}
+
+#login input, #signup input{
+	margin-bottom: 5px;
+}
+
+form .sign_in_up {
+	display: flex;
+}
+
+form .sign_in_up > button:nth-child(1) {
+	margin-right: auto;
+}
+
+form .sign_in_up > button {
+	width: 75px;
+	line-height: initial;
+}
+
+#login > input, #signup > input {
+	font-size: smaller;
+}
+
+p.login-status {
+	text-align: center;
+	margin-top: 10px;
+	margin-bottom: 0px;
+	font-size: 0.8rem;
+}
+
+a.sign_up_button, a.sign_up_click, a.log_in_button, a.log_in_click {
+	cursor: pointer;
+}
+
+a.sign_up_button:hover, a.sign_up_click:hover, a.log_in_button:hover, a.log_in_click:hover {
+	text-decoration: underline;
+	color: blue;
+}
+
+button.addButton, button.uploadButton {
+
+}
+
+i.material-icons {
+	font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 13px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+
+li.button_group {
+	display: flex;
+	font-size: 0.8em;
+}
+
+li.button_group button {
+	width: 60px;
+}
+
+li.button_group > button.uploadButton {
+	margin-left: auto;
+}
+
+button[name=login-submit] {
+	font-size: 0.8em;
+}
+
+body.extension_body #menu ul li a {
+	text-decoration: none;
+}
+
+body.extension_body #menu  ul  li a:hover {
+	background-color: #aaa;
+	cursor: pointer;
+}
+
+body.extension_body #menu ul {
+	list-style-type: none;
+    padding-inline-start: 0px;
+    margin-bottom: 0;
+}
+
+body.extension_body #menu > ul > li > ul {
+	padding-inline-start: 15px;
+	padding-inline-end: 5px;
+}
+
+body.extension_body #menu > ul > li > ul > li {
+	background-color: #eee;
+}
+
+#logout > button {
+	margin-bottom: 5px;
+}
+
+.button_group button {
+	margin-top: 5px;
+}
+
+#menu > ul > li > a.category_edit,
+#menu > ul > li > a.category_move,
+#menu > ul > li > a.category_delete {
+	float: right;
+}
+
+#bookmark_edit,
+#bookmark_move,
+#bookmark_delete {
+	float: right;
+}
+
+
+/*Modal*/
+.Modal_Bookmark_container{
+	display: none;
+	width: 100%;
+	height: 100vh;
+	position: fixed;
+	opacity: 0.9;
+	background: #222;
+	z-index: 40000;
+	top:0;
+	left: 0;
+	overflow: hidden;
+
+	animation-name: fadeIn_Container;
+	animation-duration: 0.1s;
+  
+}
+
+.Modal_Bookmark_modal{
+	display:none;
+	top: 0;
+	min-width: 250px;
+	width: 80%;
+	height: auto;
+	margin: 0 auto;
+	position: fixed;
+	z-index: 40001;
+	background: #fff;
+	border-radius: 5px;
+	box-shadow: 0px 0px 10px #000;
+	margin-top: 30px;
+	margin-left: 10%;
+
+	animation-name: fadeIn_Modal;
+	animation-duration: 0.1s;
+ 
+}
+
+.Modal_Bookmark_header{
+	width: 100%;
+	height: 70px;
+	border-radius: 10px 10px 0px 0px;
+	border-bottom: 2px solid #ccc;
+	display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-left: 40px;
+    color: #333;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.Modal_Bookmark_header {
+	font-size: 1.7em;
+}
+
+.Modal_Bookmark_header a{
+	text-decoration: none;
+	float: right;
+	line-height: 70px;
+	margin-right: 20px;
+	color: #444;
+	margin-bottom: 15px;
+}
+
+.Modal_Bookmark_header a:hover {
+	text-decoration: none;
+	cursor: pointer;
+	color: #aaa;
+}
+
+.Modal_Bookmark_content{
+	width: 100%;
+	height: auto;
+	margin-bottom: 50px;
+}
+
+#Modal_Bookmark_b .Modal_Bookmark_validation_red {
+	text-align: center;
+    margin-top: 15px;
+    margin-bottom: -10px;
+    color: red;
+    font-size: 1.2rem;
+}
+
+#Modal_Bookmark_b form{
+    margin-top: 20px;
+}
+
+#Modal_Bookmark_b form label{
+	display: block;
+	margin-left: 12%;
+	margin-top: 10px;
+	font-family: sans-serif;
+	font-size: 16px;
+	margin-left: 10%;
+    margin-top: 10px;
+    font-weight: unset;
+}
+
+#Modal_Bookmark_b form input,
+#Modal_Bookmark_b form select
+{
+	display: block;
+	width: 75%;
+	margin-left: 12%;
+	margin-top: 10px;
+	border-radius: 3px;
+	font-family: sans-serif;
+	outline: none;
+	border: 1px solid #aaa;
+    height: calc(1.5em + 0.5rem);
+    padding-left: 10px;
+    color: #495057;
+    line-height: unset;
+    background: unset;
+}
+
+#Modal_Bookmark_b label {
+	padding-top: 20px;
+	color: #212529;
+}
+
+.Modal_Bookmark_footer{
+	width: 100%;
+	height: 40px;
+	border-radius: 0px 0px 10px 10px;
+	border-top: 2px solid #ccc;
+}
+
+.Modal_Bookmark_footer button{
+	float: right;
+	margin-right: 20px;
+	margin-top: 5px;
+	text-decoration: none;
+	width: 60px;
+	border-radius: 2px;
+	color: #fff;
+	cursor: pointer;
+}
+
+#Modal_Bookmark_b .Modal_Bookmark_Delete_Confirm {
+	font-size: 1.3em;
+	margin-left: 50px;
+}
+
+#Modal_Bookmark_b ::placeholder {
+	color: #aaa;
+}
+
+#Modal_Bookmark_b input[type='file'] {
+	line-height: unset;
+}
+#Modal_Bookmark_b option[disabled="disabled"] {
+	color: #ccc;
+}
+
+#Modal_Bookmark_b select {
+	color: #333;
+}
+
+.Modal_Bookmark_footer button{
+	outline: none;
+	float: right;
+	margin-right: 20px;
+	margin-top: 5px;
+	width: 70px;
+	color: #fff;
+	cursor: pointer;
+	display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    text-transform: none;
+    overflow: visible;
+    -webkit-writing-mode: horizontal-tb !important;
+    text-rendering: auto;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-indent: 0px;
+    text-shadow: none;
+    align-items: flex-start;
+    font: 400 13.3333px Arial;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+#Modal_Bookmark_b form input[type='file'] {
+	height: calc(1.5em + .75rem + 2px) !important;
+	border: 1px solid #ced4da;
+	border-radius: 0.25rem;
+	padding: 3px;
+}
+.Modal_Bookmark_footer button:not(:disabled):not(.disabled) {
+	cursor: pointer;
+}
+
+.Modal_Bookmark_footer button:last-child {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.Modal_Bookmark_footer button:last-child:hover {
+	background-color: #218838;
+    border-color: #1e7e34;
+	text-decoration: none;
+	outline: none;
+}
+
+.Modal_Bookmark_footer button:first-child {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.Modal_Bookmark_footer button:first-child:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    text-decoration: none;
+    outline: none;
+}
+
+#Modal_Bookmark_b ::after, #Modal_Bookmark_b ::before {
+	content: none!important;
+}
+/****MEDIA QUERIES****/
+
+@media screen and (min-width: 600px){
+
+.Modal_Bookmark_modal{
+    width: 500px;
+    height: auto;
+    margin-left: calc(50vw - 250px);
+    margin-top: calc(50vh - 350px);
+}
+
+
+.Modal_Bookmark_header{
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-left: 40px;
+}
+
+.Modal_Bookmark_header a{
+    line-height: 40px;
+    margin-right: 20px;
+    margin-bottom: 15px;
+}
+
+.Modal_Bookmark_content{
+    width: 100%;
+    height: auto;
+    margin-bottom: 35px;
+}
+
+#Modal_Bookmark_b form input,
+#Modal_Bookmark_b form select
+{
+    width: 75%;
+    margin-left: 10%;
+    margin-top: 10px;
+	outline: none;	
+}
+
+#Modal_Bookmark_b label {
+  	padding-top: 0px;
+}
+
+.Modal_Bookmark_footer{
+    width: 100%;
+    height: 40px;   
+}
+
+}
+
+/*LARGE SCREEN*/
+@media screen and (min-width: 1300px){
+
+}
+
+/****ANIMATIONS****/
+
+@keyframes fadeIn_Modal {
+  from{
+    opacity: 0;
+  }
+  to{
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn_Container {
+  from{
+    opacity: 0;
+  }
+  to{
+    opacity: 0.9;
+  }
+}
